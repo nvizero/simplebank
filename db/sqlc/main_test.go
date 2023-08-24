@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	_ "github.com/lib/pq"
-	db "github.com/techschool/simplebank/db/sqlc"
 )
 
 const (
@@ -15,7 +14,7 @@ const (
 	dbSource = "postgresql://root:a123456@localhost:5432/simple_bank?sslmode=disable"
 )
 
-var testQueries = *db.Queries
+var testQueries *Queries
 
 func TestMain(m *testing.M) {
 
