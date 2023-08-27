@@ -7,27 +7,24 @@ package db
 
 import (
 	"context"
-	"time"
 )
 
 const createEntries = `-- name: CreateEntries :one
 INSERT INTO entries (
     account_id,
-	amount,
-    created_at
+	amount
 ) VALUES (
-  $1, $2, $3
+  $1, $2
 ) RETURNING id, account_id, amount, created_at
 `
 
 type CreateEntriesParams struct {
-	AccountID int64     `json:"account_id"`
-	Amount    int64     `json:"amount"`
-	CreatedAt time.Time `json:"created_at"`
+	AccountID int64 `json:"account_id"`
+	Amount    int64 `json:"amount"`
 }
 
 func (q *Queries) CreateEntries(ctx context.Context, arg CreateEntriesParams) (Entries, error) {
-	row := q.db.QueryRowContext(ctx, createEntries, arg.AccountID, arg.Amount, arg.CreatedAt)
+	row := q.db.QueryRowContext(ctx, createEntries, arg.AccountID, arg.Amount)
 	var i Entries
 	err := row.Scan(
 		&i.ID,
@@ -36,16 +33,6 @@ func (q *Queries) CreateEntries(ctx context.Context, arg CreateEntriesParams) (E
 		&i.CreatedAt,
 	)
 	return i, err
-}
-
-const deleteEntry = `-- name: DeleteEntry :exec
-DELETE FROM entries
-WHERE id = $1
-`
-
-func (q *Queries) DeleteEntry(ctx context.Context, id int64) error {
-	_, err := q.db.ExecContext(ctx, deleteEntry, id)
-	return err
 }
 
 const getEntry = `-- name: GetEntry :one
@@ -67,18 +54,20 @@ func (q *Queries) GetEntry(ctx context.Context, id int64) (Entries, error) {
 
 const listEntries = `-- name: ListEntries :many
 SELECT id, account_id, amount, created_at FROM entries
+where account_id = $1
 ORDER BY id
-LIMIT $1
-OFFSET $2
+LIMIT $2
+OFFSET $3
 `
 
 type ListEntriesParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	AccountID int64 `json:"account_id"`
+	Limit     int32 `json:"limit"`
+	Offset    int32 `json:"offset"`
 }
 
 func (q *Queries) ListEntries(ctx context.Context, arg ListEntriesParams) ([]Entries, error) {
-	rows, err := q.db.QueryContext(ctx, listEntries, arg.Limit, arg.Offset)
+	rows, err := q.db.QueryContext(ctx, listEntries, arg.AccountID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -103,28 +92,4 @@ func (q *Queries) ListEntries(ctx context.Context, arg ListEntriesParams) ([]Ent
 		return nil, err
 	}
 	return items, nil
-}
-
-const updateEntry = `-- name: UpdateEntry :one
-UPDATE entries
-SET amount = $2
-WHERE id = $1
-RETURNING id, account_id, amount, created_at
-`
-
-type UpdateEntryParams struct {
-	ID     int64 `json:"id"`
-	Amount int64 `json:"amount"`
-}
-
-func (q *Queries) UpdateEntry(ctx context.Context, arg UpdateEntryParams) (Entries, error) {
-	row := q.db.QueryRowContext(ctx, updateEntry, arg.ID, arg.Amount)
-	var i Entries
-	err := row.Scan(
-		&i.ID,
-		&i.AccountID,
-		&i.Amount,
-		&i.CreatedAt,
-	)
-	return i, err
 }
