@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"testing"
 	"time"
 	"udemy/util"
@@ -75,5 +74,4 @@ func TestDeleteAccount(t *testing.T) {
 	account2, err := testQueries.GetAccount(context.Background(), account1.ID)
 	require.Error(t, err)
 	require.Empty(t, account2)
-	fmt.Println("werwer")
 }

@@ -23,7 +23,6 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		log.Fatal("connect sql fail ", err)
 	}
-
 	testQueries = New(conn)
 	os.Exit(m.Run())
 }
