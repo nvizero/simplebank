@@ -67,6 +67,9 @@ func TestUpdateAccount(t *testing.T) {
 }
 
 func TestDeleteAccount(t *testing.T) {
+	for i := 1; i <= 10; i++ {
+		createRandomAccount(t)
+	}
 	account1 := createRandomAccount(t)
 	err := testQueries.DeleteAccount(context.Background(), account1.ID)
 	require.NoError(t, err)

@@ -8,7 +8,6 @@ import (
 )
 
 func DefAccounts(t *testing.T) []Accounts {
-
 	arg := ListAccountsParams{
 		Limit:  2,
 		Offset: 9,
