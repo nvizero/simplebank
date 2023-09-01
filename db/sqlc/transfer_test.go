@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func DefAccounts(t *testing.T) []Accounts {
+func DefAccounts(t *testing.T) []Account {
 	arg := ListAccountsParams{
 		Limit:  2,
 		Offset: 9,
@@ -18,7 +18,7 @@ func DefAccounts(t *testing.T) []Accounts {
 	return accounts
 }
 
-func createRandomTransfer(t *testing.T) Transfers {
+func createRandomTransfer(t *testing.T) Transfer {
 
 	accounts := DefAccounts(t)
 	arg2 := CreateTransferParams{

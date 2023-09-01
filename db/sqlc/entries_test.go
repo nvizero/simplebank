@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createRandomEntries(t *testing.T, account Accounts) Accounts {
+func createRandomEntries(t *testing.T, account Account) Account {
 
 	arg := CreateEntriesParams{
 		AccountID: account.ID,
@@ -28,13 +28,13 @@ func createRandomEntries(t *testing.T, account Accounts) Accounts {
 }
 
 func TestCreateEntries(t *testing.T) {
-	account := createRandomAccount(t)
+	account := CreateRandomAccount(t)
 	createRandomEntries(t, account)
 }
 
 func TestListEntries(t *testing.T) {
 
-	account := createRandomAccount(t)
+	account := CreateRandomAccount(t)
 	createRandomEntries(t, account)
 	arg := ListEntriesParams{
 		AccountID: account.ID,
